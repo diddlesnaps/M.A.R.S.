@@ -1,15 +1,117 @@
-name: my-snap-name # you probably want to 'snapcraft register <name>'
-version: '0.1' # just for humans, typically '1.2+git' or '1.3.2'
-summary: Single-line elevator pitch for your amazing snap # 79 char long summary
+name: marsshooter
+version: 'git'
+summary: A 2D space shooter with awesome visual effects and attractive physics.
 description: |
-  This is my-snap's description. You have a paragraph or two to tell the
-  most important story about your snap. Keep it under 100 words though,
-  we live in tweetspace and your description wants to look good in the snap
-  store.
+  M.A.R.S. - a ridiculous shooter is a 2D space shooter with awesome visual
+  effects and attractive physics. Players can battle each other or computer
+  controlled enemies in exciting game modes.
 
-confinement: devmode # use 'strict' once you have the right plugs and slots
+  The Story:
+  In year 3547, civilizations all over the galaxy have settled their own
+  planets, living in peace and harmony with its environment. But outside the
+  contemplative habitats, the GREAT WAR is raging. As a famous fighter on your
+  way to never ending honor and prosperity, you have to protect your planet
+  from the oncoming doom of your jealous neighbours!
+
+grade: stable
+confinement: strict
+
+apps:
+  mars:
+    command: desktop-launch $SNAP/usr/games/mars -data $SNAP/usr/share/games/marsshooter/
+    desktop: usr/share/applications/mars.desktop
+    plugs:
+      - desktop
+      - opengl
+      - pulseaudio
+      - unity7
+      - wayland
+      - x11
 
 parts:
-  my-part:
-    # See 'snapcraft plugins'
-    plugin: nil
+  patches:
+    source: patches
+    plugin: dump
+    prime: [-*]
+
+  sfml2:
+    source: https://github.com/SFML/SFML.git
+    source-type: git
+    source-tag: '2.0'
+    source-depth: 1
+    plugin: cmake
+    configflags:
+      - -DCMAKE_INSTALL_PREFIX=/usr
+    build-packages:
+      - libflac-dev
+      - libfreetype6-dev
+      - libgl1-mesa-dev
+      - libglew-dev
+      - libglu1-mesa-dev
+      - libjpeg-dev
+      - libogg-dev
+      - libopenal-dev
+      - libudev-dev
+      - libvorbis-dev
+      - libx11-dev
+      - libx11-xcb-dev
+      - libxcb1-dev
+      - libxcb-randr0-dev
+      - libxcb-image0-dev
+      - libxrandr-dev
+    stage-packages:
+      - libflac8
+      - libfreetype6
+      - libgl1-mesa-glx
+      - libglew1.13
+      - libglu1-mesa
+      - libjpeg8
+      - libogg0
+      - libopenal1
+      - libudev1
+      - libvorbis0a
+      - libx11-6
+      - libx11-xcb1
+      - libxcb1
+      - libxcb-randr0
+      - libxcb-image0
+      - libxrandr2
+
+  mars:
+    after: [sfml2, patches, desktop-glib-only]
+    source: https://github.com/thelaui/M.A.R.S..git
+    source-type: git
+    source-depth: 1
+    plugin: cmake
+    prepare: |
+      cd ../src
+      git apply $SNAPCRAFT_STAGE/mars-shader-bind.patch
+      git apply $SNAPCRAFT_STAGE/mars-missing-menufile.patch
+      sed -i 's|^Icon=.*|Icon=${SNAP}/usr/share/icons/hicolor/512x512/apps/mars.png|' resources/mars.desktop
+    configflags:
+      - -DCMAKE_INSTALL_PREFIX=/usr
+    build-packages:
+      - libfreetype6-dev
+      - libfribidi-dev
+      - libgl1-mesa-dev
+      - libglew-dev
+      - libjpeg-dev
+      - libopenal-dev
+      - libpng12-dev
+      - libpulse-dev
+      - libsndfile1-dev
+      - libtag1-dev
+      - libxrandr-dev
+      - patch
+    stage-packages:
+      - libfreetype6
+      - libfribidi0
+      - libgl1-mesa-glx
+      - libglew1.13
+      - libjpeg8
+      - libopenal1
+      - libpng12-0
+      - libpulse0
+      - libsndfile1
+      - libtag1v5
+      - libxrandr2
