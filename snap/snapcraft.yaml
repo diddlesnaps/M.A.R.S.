@@ -22,6 +22,7 @@ apps:
     desktop: usr/share/applications/mars.desktop
     plugs:
       - desktop
+      - joystick
       - opengl
       - pulseaudio
       - unity7
