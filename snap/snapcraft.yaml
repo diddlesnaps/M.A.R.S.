@@ -1,6 +1,6 @@
 name: marsshooter
 version: 'git'
-summary: A 2D space shooter with awesome visual effects and attractive physics.
+adopt-info: mars
 description: |
   M.A.R.S. - a ridiculous shooter is a 2D space shooter with awesome visual
   effects and attractive physics. Players can battle each other or computer
@@ -17,9 +17,9 @@ grade: stable
 confinement: strict
 
 apps:
-  mars:
-    command: desktop-launch $SNAP/usr/games/mars -data $SNAP/usr/share/games/marsshooter/
-    desktop: usr/share/applications/mars.desktop
+  marsshooter:
+    command: desktop-launch $SNAP/usr/games/marsshooter -data $SNAP/usr/share/games/marsshooter/ -cfg $SNAP_USER_DATA/.marsshooter/
+    desktop: usr/share/applications/marsshooter.desktop
     plugs:
       - desktop
       - joystick
@@ -80,21 +80,21 @@ parts:
 
   mars:
     after: [sfml2, patches, desktop-glib-only]
-    source: https://github.com/thelaui/M.A.R.S..git
+    source: https://github.com/jwrdegoede/M.A.R.S..git
     source-type: git
     source-depth: 1
     plugin: cmake
-    prepare: |
-      cd ../src
-      git apply $SNAPCRAFT_STAGE/mars-shader-bind.patch
-      git apply $SNAPCRAFT_STAGE/mars-missing-menufile.patch
-      sed -i 's|^Icon=.*|Icon=${SNAP}/usr/share/icons/hicolor/512x512/apps/mars.png|' resources/mars.desktop
+    override-pull: |
+      snapcraftctl pull
+      #git apply $SNAPCRAFT_STAGE/mars-missing-menufile.patch # not needed?
+      sed -i 's|^Icon=.*|Icon=${SNAP}/usr/share/icons/hicolor/512x512/apps/mars.png|' resources/marsshooter.desktop
     configflags:
       - -DCMAKE_INSTALL_PREFIX=/usr
+    parse-info: [usr/share/appdata/marsshooter.appdata.xml]
     build-packages:
       - libfreetype6-dev
       - libfribidi-dev
-      - libgl1-mesa-dev
+      - libglu1-mesa-dev
       - libglew-dev
       - libjpeg-dev
       - libopenal-dev
@@ -107,7 +107,7 @@ parts:
     stage-packages:
       - libfreetype6
       - libfribidi0
-      - libgl1-mesa-glx
+      - libglu1-mesa
       - libglew1.13
       - libjpeg8
       - libopenal1
