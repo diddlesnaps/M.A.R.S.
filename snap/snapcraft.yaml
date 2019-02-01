@@ -1,17 +1,18 @@
 name: marsshooter
-version: 'git'
+version: 'latest'
 adopt-info: mars
-description: |
+description: >
   M.A.R.S. - a ridiculous shooter is a 2D space shooter with awesome visual
   effects and attractive physics. Players can battle each other or computer
   controlled enemies in exciting game modes.
 
   The Story:
-  In year 3547, civilizations all over the galaxy have settled their own
-  planets, living in peace and harmony with its environment. But outside the
-  contemplative habitats, the GREAT WAR is raging. As a famous fighter on your
-  way to never ending honor and prosperity, you have to protect your planet
-  from the oncoming doom of your jealous neighbours!
+
+  > In year 3547, civilizations all over the galaxy have settled their own
+  > planets, living in peace and harmony with its environment. But outside the
+  > contemplative habitats, the GREAT WAR is raging. As a famous fighter on your
+  > way to never ending honor and prosperity, you have to protect your planet
+  > from the oncoming doom of your jealous neighbours!
 
 grade: stable
 confinement: strict
@@ -30,11 +31,6 @@ apps:
       - x11
 
 parts:
-  patches:
-    source: patches
-    plugin: dump
-    prime: [-*]
-
   sfml2:
     source: https://github.com/SFML/SFML.git
     source-type: git
@@ -79,15 +75,14 @@ parts:
       - libxrandr2
 
   mars:
-    after: [sfml2, patches, desktop-glib-only]
+    after: [sfml2, desktop-glib-only]
     source: https://github.com/jwrdegoede/M.A.R.S..git
     source-type: git
     source-depth: 1
     plugin: cmake
     override-pull: |
       snapcraftctl pull
-      #git apply $SNAPCRAFT_STAGE/mars-missing-menufile.patch # not needed?
-      sed -i 's|^Icon=.*|Icon=${SNAP}/usr/share/icons/hicolor/512x512/apps/mars.png|' resources/marsshooter.desktop
+      sed -i 's|^Icon=.*|Icon=${SNAP}/usr/share/icons/hicolor/512x512/apps/marsshooter.png|' resources/marsshooter.desktop
     configflags:
       - -DCMAKE_INSTALL_PREFIX=/usr
     parse-info: [usr/share/appdata/marsshooter.appdata.xml]
