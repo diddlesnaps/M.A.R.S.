@@ -22,6 +22,7 @@ apps:
     command: desktop-launch $SNAP/usr/games/marsshooter -data $SNAP/usr/share/games/marsshooter/ -cfg $SNAP_USER_DATA/.marsshooter/
     desktop: usr/share/applications/marsshooter.desktop
     plugs:
+      - audio-playback
       - desktop
       - joystick
       - opengl
