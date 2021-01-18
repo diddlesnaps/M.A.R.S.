@@ -16,10 +16,14 @@ description: >
 
 grade: stable
 confinement: strict
+base: core18
+compression: lzo
 
 apps:
   marsshooter:
-    command: desktop-launch $SNAP/usr/games/marsshooter -data $SNAP/usr/share/games/marsshooter/ -cfg $SNAP_USER_DATA/.marsshooter/
+    command: usr/games/marsshooter -data $SNAP/usr/share/games/marsshooter/ -cfg $SNAP_USER_DATA/.marsshooter/
+    command-chain: [bin/desktop-launch]
+    common-id: marsshooter.desktop
     desktop: usr/share/applications/marsshooter.desktop
     plugs:
       - audio-playback
@@ -32,6 +36,15 @@ apps:
       - x11
 
 parts:
+  desktop-glib-only:
+    source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
+    source-subdir: glib-only
+    plugin: make
+    build-packages:
+      - libglib2.0-dev
+    stage-packages:
+      - libglib2.0-bin
+
   sfml2:
     source: https://github.com/SFML/SFML.git
     source-type: git
@@ -61,7 +74,7 @@ parts:
       - libflac8
       - libfreetype6
       - libgl1-mesa-glx
-      - libglew1.13
+      - libglew2.0
       - libglu1-mesa
       - libjpeg8
       - libogg0
@@ -74,6 +87,8 @@ parts:
       - libxcb-randr0
       - libxcb-image0
       - libxrandr2
+      - libsndfile1
+      - libvorbisenc2
 
   mars:
     after: [sfml2, desktop-glib-only]
@@ -94,7 +109,7 @@ parts:
       - libglew-dev
       - libjpeg-dev
       - libopenal-dev
-      - libpng12-dev
+      - libpng-dev
       - libpulse-dev
       - libsndfile1-dev
       - libtag1-dev
@@ -104,10 +119,10 @@ parts:
       - libfreetype6
       - libfribidi0
       - libglu1-mesa
-      - libglew1.13
+      - libglew2.0
       - libjpeg8
       - libopenal1
-      - libpng12-0
+      - libpng16-16
       - libpulse0
       - libsndfile1
       - libtag1v5
