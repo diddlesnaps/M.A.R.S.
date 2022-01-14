@@ -51,6 +51,9 @@ parts:
     source-tag: '2.0'
     source-depth: 1
     plugin: cmake
+    build-environment:
+      - CFLAGS: -O2 -pipe
+      - CXXFLAGS: -O2 -pipe
     configflags:
       - -DCMAKE_INSTALL_PREFIX=/usr
     build-packages:
@@ -99,6 +102,9 @@ parts:
     override-pull: |
       snapcraftctl pull
       sed -i 's|^Icon=.*|Icon=${SNAP}/usr/share/icons/hicolor/512x512/apps/marsshooter.png|' resources/marsshooter.desktop
+    build-environment:
+      - CFLAGS: -O2 -pipe
+      - CXXFLAGS: -O2 -pipe
     configflags:
       - -DCMAKE_INSTALL_PREFIX=/usr
     parse-info: [usr/share/appdata/marsshooter.appdata.xml]
